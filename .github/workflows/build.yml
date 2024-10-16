@@ -43,16 +43,18 @@ jobs:
           name: qosmate_${{ matrix.arch }}
           path: bin/packages/${{ matrix.arch }}/qosmate/*.ipk
 
-      - name: Compress
+      - name: Get version and Compress
         run: |
+          version=$(wget -qO- https://github.com/hudra0/qosmate/raw/main/etc/qosmate.sh | grep 'VERSION=' | sed -n 's/.*VERSION="\([^"]*\)".*/\1/p')
+          echo "latest_version=v$version" >>$GITHUB_ENV
           tar -c -z -f qosmate_${{ matrix.arch }}.tar.gz -C bin/packages/${{ matrix.arch }}/qosmate .
 
       - name: Create and Upload Release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          release_name: qosmate
-          tag: latest
+          release_name: qosmate-${{ env.latest_version }}
+          tag: ${{ env.latest_version }}
           file_glob: true
           overwrite: true
           file: qosmate_${{ matrix.arch }}.tar.gz
