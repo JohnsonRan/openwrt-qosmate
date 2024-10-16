@@ -1,0 +1,33 @@
+name: Build Packages
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build ${{ matrix.arch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - x86_64
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build
+        uses: openwrt/gh-action-sdk@main
+        env:
+          ARCH: ${{ matrix.arch }}
+          FEEDNAME: qosmate
+          PACKAGES: luci-app-qosmate
+          NO_REFRESH_CHECK: true
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: qosmate_${{ matrix.arch }}
+          path: bin/packages/${{ matrix.arch }}/qosmate/*.ipk
