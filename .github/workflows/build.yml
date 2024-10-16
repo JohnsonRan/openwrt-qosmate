@@ -47,6 +47,8 @@ jobs:
         run: |
           version=$(wget -qO- https://github.com/hudra0/qosmate/raw/main/etc/qosmate.sh | grep 'VERSION=' | sed -n 's/.*VERSION="\([^"]*\)".*/\1/p')
           echo "latest_version=v$version" >>$GITHUB_ENV
+          luci_version=$(wget -qO- https://github.com/hudra0/luci-app-qosmate/raw/main/Makefile | grep 'PKG_VERSION' | sed -n 's/.*PKG_VERSION:=\([0-9.]*\).*/\1/p')
+          echo "latest_luciversion=v$luci_version" >>$GITHUB_ENV
           tar -c -z -f qosmate_${{ matrix.arch }}.tar.gz -C bin/packages/${{ matrix.arch }}/qosmate .
 
       - name: Create and Upload Release
@@ -54,6 +56,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           release_name: qosmate-${{ env.latest_version }}
+          body: luci-app-qosmate-${{ env.latest_luciversion }}
           tag: ${{ env.latest_version }}
           file_glob: true
           overwrite: true
