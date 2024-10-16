@@ -1,0 +1,6 @@
+[submodule "qosmate"]
+	path = qosmate
+	url = https://github.com/hudra0/qosmate
+[submodule "luci-app-qosmate"]
+	path = luci-app-qosmate
+	url = https://github.com/hudra0/luci-app-qosmate
