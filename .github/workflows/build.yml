@@ -24,11 +24,6 @@ jobs:
           fetch-depth: 0
           submodules: true
 
-      - name: Add Chinese translation
-        run: |
-         mkdir -p luci-app-qosmate/po/zh_Hans
-         mv qosmate.po luci-app-qosmate/po/zh_Hans
-
       - name: Build
         uses: openwrt/gh-action-sdk@main
         env:
