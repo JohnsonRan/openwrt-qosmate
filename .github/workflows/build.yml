@@ -45,17 +45,16 @@ jobs:
           luci_version=$(wget -qO- https://github.com/hudra0/luci-app-qosmate/raw/main/Makefile | grep 'PKG_VERSION' | sed -n 's/.*PKG_VERSION:=\([0-9.]*\).*/\1/p')
           echo "latest_luciversion=v$luci_version" >>$GITHUB_ENV
           tar -c -z -f qosmate_${{ matrix.arch }}.tar.gz -C bin/packages/${{ matrix.arch }}/qosmate .
-
-      - name: Create and Upload Release
-        uses: svenstaro/upload-release-action@v2
+          
+      - name: Create release
+        uses: ncipollo/release-action@v1.14.0
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          release_name: qosmate-${{ env.latest_version }}
-          body: luci-app-qosmate-${{ env.latest_luciversion }}
+          name: qosmate-${{ env.latest_version }}
+          allowUpdates: true
           tag: ${{ env.latest_version }}
-          file_glob: true
-          overwrite: true
-          file: qosmate_${{ matrix.arch }}.tar.gz
+          replacesArtifacts: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: qosmate_${{ matrix.arch }}.tar.gz
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@main
